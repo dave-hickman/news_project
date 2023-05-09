@@ -17,7 +17,6 @@ describe('GET /api/topics', () => {
         return request(app).get('/api/topics')
         .expect(200)
         .then((response) => {
-            console.log(response)
             response.body.forEach((topic) => {
                 expect(topic.hasOwnProperty('slug')).toBe(true);
                 expect(topic.hasOwnProperty('description')).toBe(true);

@@ -26,7 +26,6 @@ describe('GET /api/topics', () => {
         }
         )
         
-        
     });
     it('should respond with a 404 error if the api path is not found', () => {
         return request(app).get('/api/toopics')

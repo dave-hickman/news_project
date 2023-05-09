@@ -1,10 +1,11 @@
 const express = require('express')
 const app = express()
 const {getTopics} = require('./contollers/topics_controller')
+const {getArticles} = require('./contollers/articles_controller')
 
 app.get('/api/topics', getTopics)
 
-app.get('api/articles/:article_id', getArticle)
+app.get('api/articles/:article_id', getArticles)
 
 app.use((req, res, next) => {
         res.status(404).send('Invalid request!')

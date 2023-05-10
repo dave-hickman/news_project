@@ -41,7 +41,6 @@ describe("GET /api/articles/:article_id", () => {
       .get("/api/articles/dog")
       .expect(400)
       .then((response) => {
-        console.log(response.text)
         expect(response.text).toEqual("Invalid Input!");
       });
   });

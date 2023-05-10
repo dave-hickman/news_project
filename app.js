@@ -16,15 +16,13 @@ app.use((err, req, res, next) => {
         if (err.status && err.msg){
             res.status(err.status).send({err: err.msg})
         }
-        if (err.code === '22P02'){
+        else if (err.code === '22P02'){
             res.status(400).send({msg: 'Invalid Input!'})
         }
-        if (err.code === 500){
+        else{
             res.status(500).send({msg: 'Server Error'})
-        }
-        else next(err)
     }
-  );
+});
 
 
 app.use((req, res, next) => {

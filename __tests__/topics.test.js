@@ -32,7 +32,7 @@ describe('GET /api/topics', () => {
         return request(app).get('/api/toopics')
         .expect(404)
         .then((response) => {
-         expect(response.text).toBe('Invalid request!')   
+         expect(response.body).toEqual({msg:'Invalid request!'})   
         }
         )
     });

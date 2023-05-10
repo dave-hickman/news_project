@@ -41,7 +41,7 @@ describe("GET /api/articles/:article_id", () => {
       .get("/api/articles/dog")
       .expect(400)
       .then((response) => {
-        expect(response.text).toEqual("Invalid Input!");
+        expect(response.body).toEqual({msg: "Invalid Input!"});
       });
   });
   it('should return 404 if given a number but unable to find it', () => {
@@ -49,7 +49,7 @@ describe("GET /api/articles/:article_id", () => {
     .get("/api/articles/9999")
     .expect(404)
     .then((response) => {
-      expect(response.text).toEqual("No user found for user_id: 9999!");
+      expect(response.body).toEqual({err: "No user found for user_id: 9999!"});
     });
     
   });

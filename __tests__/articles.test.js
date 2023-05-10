@@ -14,7 +14,7 @@ beforeEach(() => {
 });
 
 afterAll(() => {
-  return db.end;
+  return db.end();
 });
 
 describe("GET /api/articles/:article_id", () => {
@@ -25,15 +25,7 @@ describe("GET /api/articles/:article_id", () => {
       .then((response) => {
         expect(response.body.article.length).toBe(1);
         response.body.article.forEach((article) => {
-          expect(article.hasOwnProperty("article_id")).toBe(true);
-          expect(article.hasOwnProperty("title")).toBe(true);
-          expect(article.hasOwnProperty("topic")).toBe(true);
-          expect(article.hasOwnProperty("author")).toBe(true);
-          expect(article.hasOwnProperty("body")).toBe(true);
-          expect(article.hasOwnProperty("created_at")).toBe(true);
-          expect(article.hasOwnProperty("votes")).toBe(true);
-          expect(article.hasOwnProperty("article_img_url")).toBe(true);
-          expect(typeof article.article_id).toBe("number");
+          expect(article.article_id).toBe(1);
           expect(typeof article.title).toBe("string");
           expect(typeof article.topic).toBe("string");
           expect(typeof article.author).toBe("string");
@@ -49,7 +41,8 @@ describe("GET /api/articles/:article_id", () => {
       .get("/api/articles/dog")
       .expect(400)
       .then((response) => {
-        expect(response.text).toBe("Invalid Input!");
+        console.log(response.text)
+        expect(response.text).toEqual("Invalid Input!");
       });
   });
   it('should return 404 if given a number but unable to find it', () => {
@@ -57,7 +50,7 @@ describe("GET /api/articles/:article_id", () => {
     .get("/api/articles/9999")
     .expect(404)
     .then((response) => {
-      expect(response.text).toBe("No user found for user_id: 9999!");
+      expect(response.text).toEqual("No user found for user_id: 9999!");
     });
     
   });

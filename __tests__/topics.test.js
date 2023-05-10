@@ -9,7 +9,7 @@ beforeEach(() => {
 });
 
 afterAll(() => {
-    return db.end
+    return db.end()
 })
 
 describe('GET /api/topics', () => {

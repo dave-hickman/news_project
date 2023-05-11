@@ -148,3 +148,93 @@ describe("GET /api/articles", () => {
       });
   });
 });
+
+describe("GET /api/articles/:article_id/comments", () => {
+  it("should return the correct value types", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.comments.length === 11).toBe(true);
+        response.body.comments.forEach((comment) => {
+          expect(typeof comment.author).toBe("string");
+          expect(typeof comment.article_id).toBe("number");
+          expect(typeof comment.comment_id).toBe("number");
+          expect(typeof comment.votes).toBe("number");
+          expect(typeof comment.body).toBe("string");
+          expect(typeof comment.created_at).toBe("string");
+        });
+      });
+  });
+
+  it("should return an array in descending date order", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.comments).toBeSortedBy("created_at", {
+          descending: true,
+        });
+      });
+  });
+  it("should return 400 if given wrong type of article_id", () => {
+    return request(app)
+      .get("/api/articles/dog/comments")
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual({ msg: "Invalid Input!" });
+      });
+  });
+  it("should return 404 if the number of the article isnt in the database", () => {
+    return request(app)
+      .get("/api/articles/999/comments")
+      .expect(404)
+      .then((response) => {
+        expect(response.body).toEqual({ err: "Resource not found" });
+      });
+  });
+  it("should respond with an empty array if given an article with no comments", () => {
+    return request(app)
+      .get("/api/articles/7/comments")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.comments.length).toBe(0);
+      });
+  });
+});
+describe("POST /api/articles/:article_id/comments", () => {
+  it("should return object with requested properties", () => {
+    const newComment = { username: "icellusedkars", body: "Hello there" };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(201)
+      .then((response) => {
+        expect(typeof response.body.comment[0].author).toBe("string");
+        expect(typeof response.body.comment[0].body).toBe("string");
+        expect(typeof response.body.comment[0].article_id).toBe("number");
+      });
+  });
+
+  it("should return a 404 if given non-existent article ID", () => {
+    const newComment = { username: "icellusedkars", body: "Hello there" };
+    return request(app)
+      .post("/api/articles/999/comments")
+      .send(newComment)
+      .expect(404)
+      .then((response) => {
+        expect(response.body).toEqual({ msg: "Input not found!" });
+      });
+  });
+
+  it('should return a 400 if given an invalid article ID', () => {
+    const newComment = { username: "icellusedkars", body: "Hello there" };
+    return request(app)
+      .post("/api/articles/dogs/comments")
+      .send(newComment)
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual({ msg: "Invalid Input!" });
+      });
+  });
+});

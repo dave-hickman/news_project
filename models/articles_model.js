@@ -1,4 +1,6 @@
 const db = require("../db/connection");
+const { checkExists } = require("../db/seeds/utils");
+const format = require('pg-format')
 
 exports.selectArticle = (articleID) => {
   return db
@@ -30,15 +32,26 @@ exports.selectAllArticles = () => {
     });
 };
 
+exports.selectComments = (articleID) => {
+  return Promise.all([db.query(
+    `SELECT * from comments
+    WHERE article_id = $1
+    ORDER BY created_at DESC;`, [articleID]),
+    checkExists('articles', 'article_id', articleID)]
+  )
+  .then(([comments, checkExistsOutput]) => {
+      return comments.rows})
+}
+
 exports.sendComment = (articleID, commentInfo) => {
+
   const { username } = commentInfo;
   const { body } = commentInfo;
-  return db
-    .query(
-      `INSERT INTO comments (username, body, article_id)
-  VALUES ($1, $2, $3) RETURNING *`,
-      [username, body, articleID]
-    )
+  const values = [[username, body, articleID]]
+  const formattedInsert = format(`INSERT INTO comments (author, body, article_id)
+  VALUES %L RETURNING *;`,
+  values)
+  return db.query(formattedInsert)
     .then((comment) => {
       return comment.rows;
     });

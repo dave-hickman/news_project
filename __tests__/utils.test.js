@@ -104,14 +104,3 @@ describe("formatComments", () => {
     expect(formattedComments[0].created_at).toEqual(new Date(timestamp));
   });
 });
-
-describe('checkExists', () => {
-  it('should provide back error message if no article exists', () => {
-    const table = 'comments'
-    const column = 'article_id'
-    const value = 999
-  
-    
-  });
-  
-});

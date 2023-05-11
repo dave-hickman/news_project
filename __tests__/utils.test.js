@@ -2,7 +2,9 @@ const {
   convertTimestampToDate,
   createRef,
   formatComments,
+  checkExists,
 } = require("../db/seeds/utils");
+const db = require('../db/connection')
 
 describe("convertTimestampToDate", () => {
   test("returns a new object", () => {
@@ -101,4 +103,15 @@ describe("formatComments", () => {
     const formattedComments = formatComments(comments, {});
     expect(formattedComments[0].created_at).toEqual(new Date(timestamp));
   });
+});
+
+describe('checkExists', () => {
+  it('should provide back error message if no article exists', () => {
+    const table = 'comments'
+    const column = 'article_id'
+    const value = 999
+  
+    
+  });
+  
 });

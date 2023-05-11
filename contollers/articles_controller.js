@@ -17,8 +17,10 @@ exports.getAllArticles = (req, res, next) => {
     .catch(next)
 }
 exports.getComments = (req, res, next) => {
-    selectComments()
+    const articleID = req.params.article_id
+    selectComments(articleID)
     .then((comments) => {
         res.status(200).send({comments})
     })
+    .catch(next)
 }

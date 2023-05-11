@@ -148,3 +148,66 @@ describe("GET /api/articles", () => {
       });
   });
 });
+
+describe("GET /api/articles/:article_id/comments", () => {
+  it("should return the correct value types", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.comments.length > 0).toBe(true);
+        response.body.comments.forEach((comment) => {
+          expect(typeof comment.author).toBe("string");
+          expect(typeof comment.article_id).toBe("number");
+          expect(typeof comment.comment_id).toBe("number");
+          expect(typeof comment.votes).toBe("number");
+          expect(typeof comment.body).toBe("string");
+          expect(typeof comment.created_at).toBe("string");
+        });
+      });
+  });
+
+  it("should return an array in descending date order", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then((response) => {
+        expect(
+          response.body.comments.every((comment, index) => {
+            return (
+              index === 0 ||
+              comment.created_at < response.body.comments[index - 1].created_at
+            );
+          })
+        ).toBe(true);
+      });
+  });
+  it('should return 400 if given wrong type of article_id', () => {
+    return request(app)
+      .get("/api/articles/dog/comments")
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual({ msg: "Invalid Input!" });
+      });
+  });
+  it('should return 404 if the number of the article isnt in the database', () => {
+    return request(app)
+    .get("/api/articles/999/comments")
+    .expect(404)
+    .then((response) => {
+      expect(response.body).toEqual({err: "Resource not found"})
+
+    })
+    
+  });
+  it('should respond with an empty array if given an article with no comments', () => {
+    return request(app)
+    .get("/api/articles/7/comments")
+    .expect(200)
+    .then((response) => {
+      expect(response.body.comments.length).toBe(0)
+    })
+    
+  });
+  
+});

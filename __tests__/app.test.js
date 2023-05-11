@@ -155,7 +155,6 @@ describe("GET /api/articles/:article_id/comments", () => {
       .get("/api/articles/1/comments")
       .expect(200)
       .then((response) => {
-        console.log(response.body.comments)
         expect(response.body.comments.length === 11).toBe(true);
         response.body.comments.forEach((comment) => {
           expect(typeof comment.author).toBe("string");
@@ -200,6 +199,28 @@ describe("GET /api/articles/:article_id/comments", () => {
     .expect(200)
     .then((response) => {
       expect(response.body.comments.length).toBe(0)
+    })
+    
+  });
+  
+});
+
+describe('8. PATCH /api/articles/:article_id', () => {
+  it('should return an article with increased vote', () => {
+    return request(app)
+    .patch('/api/articles/1')
+    .send({inc_votes: 2})
+    .expect(200)
+    .then((response) => {
+      expect(response.body.article[0].votes).toBe(102)
+      expect(response.body.article[0].article_id).toBe(1)
+      expect(typeof response.body.article[0].title).toBe('string')
+      expect(typeof response.body.article[0].topic).toBe('string')
+      expect(typeof response.body.article[0].author).toBe('string')
+      expect(typeof response.body.article[0].body).toBe('string')
+      expect(typeof response.body.article[0].created_at).toBe('string')
+      expect(typeof response.body.article[0].article_img_url).toBe('string')
+    
     })
     
   });

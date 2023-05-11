@@ -34,3 +34,13 @@ exports.selectComments = (articleID) => {
   .then(([comments, checkExistsOutput]) => {
       return comments.rows})
 }
+
+exports.editArticle = (articleID, voteBody) => {
+  const voteAddition = voteBody.inc_votes 
+ return db.query(`UPDATE articles
+  SET votes = votes + $1 WHERE article_id = $2 RETURNING *`, [voteAddition, articleID])
+  .then((article) => {
+    return article.rows
+  })
+
+}

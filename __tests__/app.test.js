@@ -18,7 +18,7 @@ afterAll(() => {
   return db.end();
 });
 
-describe.only('GET /api', () => {
+describe('GET /api', () => {
   it('should return a JSON object', () => {
     return request(app).get('/api')
     .expect(200)

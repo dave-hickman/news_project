@@ -13,7 +13,7 @@ exports.selectArticle = (articleID) => {
       if (article.rows.length === 0) {
         return Promise.reject({
           status: 404,
-          msg: `No user found for user_id: ${articleID}!`,
+          msg: `No article found for article_id: ${articleID}!`,
         });
       }
       return article.rows;
@@ -44,7 +44,18 @@ exports.selectComments = (articleID) => {
 }
 
 exports.sendComment = (articleID, commentInfo) => {
-
+  if (!commentInfo.body || !commentInfo.username){
+    return Promise.reject({
+      status:400, 
+      msg: 'Missing inputs!'
+    })
+  }
+  if (Object.keys(commentInfo).length > 2){
+    return Promise.reject({
+      status:400, 
+      msg: 'Invalid inputs provided!'
+    })
+  }
   const { username } = commentInfo;
   const { body } = commentInfo;
   const values = [[username, body, articleID]]

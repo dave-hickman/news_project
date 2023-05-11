@@ -1,4 +1,4 @@
-const {selectArticle, selectComments} = require('../models/articles_model')
+const {selectArticle, selectComments, selectAllArticles} = require('../models/articles_model')
 
 exports.getArticle = (req,res,next) => {
     const articleID = req.params.article_id
@@ -9,6 +9,13 @@ exports.getArticle = (req,res,next) => {
     .catch(next)
 }
 
+exports.getAllArticles = (req, res, next) => {
+    selectAllArticles()
+    .then((articles) => {
+        res.status(200).send({articles})
+    })
+    .catch(next)
+}
 exports.getComments = (req, res, next) => {
     selectComments()
     .then((comments) => {

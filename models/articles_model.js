@@ -14,3 +14,8 @@ exports.selectArticle = (articleID) => {
       return article.rows;
     });
 };
+
+exports.selectComments = () => {
+  return db.query()
+  .then((comments) => comments.rows)
+}

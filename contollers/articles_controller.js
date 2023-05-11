@@ -1,4 +1,4 @@
-const {selectArticle} = require('../models/articles_model')
+const {selectArticle, selectComments} = require('../models/articles_model')
 
 exports.getArticle = (req,res,next) => {
     const articleID = req.params.article_id

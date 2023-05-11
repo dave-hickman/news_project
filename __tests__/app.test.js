@@ -155,7 +155,8 @@ describe("GET /api/articles/:article_id/comments", () => {
       .get("/api/articles/1/comments")
       .expect(200)
       .then((response) => {
-        expect(response.body.comments.length > 0).toBe(true);
+        console.log(response.body.comments)
+        expect(response.body.comments.length === 11).toBe(true);
         response.body.comments.forEach((comment) => {
           expect(typeof comment.author).toBe("string");
           expect(typeof comment.article_id).toBe("number");
@@ -172,14 +173,7 @@ describe("GET /api/articles/:article_id/comments", () => {
       .get("/api/articles/1/comments")
       .expect(200)
       .then((response) => {
-        expect(
-          response.body.comments.every((comment, index) => {
-            return (
-              index === 0 ||
-              comment.created_at < response.body.comments[index - 1].created_at
-            );
-          })
-        ).toBe(true);
+        expect(response.body.comments).toBeSortedBy('created_at', {descending: true})
       });
   });
   it('should return 400 if given wrong type of article_id', () => {

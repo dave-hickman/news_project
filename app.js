@@ -5,8 +5,6 @@ const {getArticle} = require('./contollers/articles_controller')
 const {getAllArticles} = require('./contollers/articles_controller')
 const {getEndpoints} = require('./contollers/endpoints_controller')
 
-app.use(express.json())
-
 app.get('/api/topics', getTopics)
 
 app.get('/api/articles', getAllArticles)

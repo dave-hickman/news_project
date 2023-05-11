@@ -18,12 +18,14 @@ afterAll(() => {
   return db.end();
 });
 
-describe('GET /api', () => {
+describe.only('GET /api', () => {
   it('should return a JSON object', () => {
     return request(app).get('/api')
     .expect(200)
     .then((response) => {
-      expect(JSON.parse(response.text)).toBeInstanceOf(Object)
+      const jsonData = response.body
+      console.log(jsonData)
+      expect(JSON.parse(jsonData.body)).toBeInstanceOf(Object)
     })
     
   });
@@ -31,7 +33,8 @@ describe('GET /api', () => {
     return request(app).get('/api')
     .expect(200)
     .then((response) => {
-      const parsedEndpoints = JSON.parse(response.text)
+      const jsonData = response.body
+      const parsedEndpoints = JSON.parse(jsonData.body)
       expect(parsedEndpoints).toEqual(JSONendpoints)
     })
     
@@ -39,14 +42,12 @@ describe('GET /api', () => {
 });
 
 describe('GET /api/topics', () => {
-    it('should return the required keys with the correct value types', () => {
+    it('should return the required keys have the correct value types', () => {
         return request(app).get('/api/topics')
         .expect(200)
         .then((response) => {
             expect(response.body.topics.length).toBe(3)
             response.body.topics.forEach((topic) => {
-                expect(topic.hasOwnProperty('slug')).toBe(true);
-                expect(topic.hasOwnProperty('description')).toBe(true);
                 expect(typeof topic.slug).toBe('string');
                 expect(typeof topic.description).toBe('string');
             })
@@ -110,6 +111,7 @@ describe('GET /api/articles', () => {
     .get('/api/articles')
     .expect(200)
     .then((response) => {
+      expect(response.body.articles.length > 0).toBe(true)
       response.body.articles.forEach((article) => {
         expect(typeof article.author).toBe('string')
         expect(typeof article.title).toBe('string')

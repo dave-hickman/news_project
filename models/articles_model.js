@@ -1,4 +1,5 @@
 const db = require("../db/connection");
+const { checkExists } = require("../db/seeds/utils");
 
 exports.selectArticle = (articleID) => {
   return db
@@ -22,4 +23,14 @@ exports.selectAllArticles = () => {
   .then((article) => {
     return article.rows
   })
+}
+exports.selectComments = (articleID) => {
+  return Promise.all([db.query(
+    `SELECT * from comments
+    WHERE article_id = $1
+    ORDER BY created_at DESC;`, [articleID]),
+    checkExists('articles', 'article_id', articleID)]
+  )
+  .then(([comments, checkExistsOutput]) => {
+      return comments.rows})
 }

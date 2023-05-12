@@ -364,5 +364,12 @@ describe('GET /api/users', () => {
     })
     
   });
-  
+  it("should return 404 if path is not found", () => {
+    return request(app)
+      .get("/api/userss")
+      .expect(404)
+      .then((response) => {
+        expect(response.body).toEqual({ msg: "Invalid request!" });
+      });
+  });
 });

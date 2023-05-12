@@ -1,4 +1,4 @@
-const {selectArticle, selectComments, selectAllArticles, editArticle} = require('../models/articles_model')
+const {selectArticle, sendComment, selectComments, selectAllArticles, editArticle} = require('../models/articles_model')
 
 exports.getArticle = (req,res,next) => {
     const articleID = req.params.article_id
@@ -25,6 +25,16 @@ exports.getComments = (req, res, next) => {
     .catch(next)
 }
 
+exports.postComment = (req, res, next) => {
+    const articleID = req.params.article_id
+    const commentInfo = req.body
+    sendComment(articleID, commentInfo)
+    .then((comment) => {
+        res.status(201).send({comment})
+    })
+    .catch(next)
+}
+
 exports.patchArticle = (req, res, next) => {
     const articleID =req.params.article_id
     const voteBody = req.body
@@ -32,4 +42,5 @@ exports.patchArticle = (req, res, next) => {
     .then((article) => {
         res.status(200).send({article})
     })
+    .catch(next)
 }

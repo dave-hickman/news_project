@@ -378,3 +378,28 @@ describe("DELETE /api/articles/:comment_id", () => {
       });
   });
 });
+
+describe('GET /api/users', () => {
+  it('should provide an object of all users with correct properties', () => {
+    return request(app)
+    .get('/api/users')
+    .expect(200)
+    .then((response) => {
+      expect(response.body.users.length === 4)
+      response.body.users.forEach((user) => {
+        expect(typeof user.username).toBe('string')
+        expect(typeof user.name).toBe('string')
+        expect(typeof user.avatar_url).toBe('string')
+      })
+    })
+    
+  });
+  it("should return 404 if path is not found", () => {
+    return request(app)
+      .get("/api/userss")
+      .expect(404)
+      .then((response) => {
+        expect(response.body).toEqual({ msg: "Invalid request!" });
+      });
+  });
+});

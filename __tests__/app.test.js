@@ -274,3 +274,77 @@ describe("POST /api/articles/:article_id/comments", () => {
       });
   });
 });
+
+describe("8. PATCH /api/articles/:article_id", () => {
+  it("should return an article with increased vote", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: 2 })
+      .expect(200)
+      .then((response) => {
+        expect(response.body.article[0].votes).toBe(102);
+        expect(response.body.article[0].article_id).toBe(1);
+        expect(typeof response.body.article[0].title).toBe("string");
+        expect(typeof response.body.article[0].topic).toBe("string");
+        expect(typeof response.body.article[0].author).toBe("string");
+        expect(typeof response.body.article[0].body).toBe("string");
+        expect(typeof response.body.article[0].created_at).toBe("string");
+        expect(typeof response.body.article[0].article_img_url).toBe("string");
+      });
+  });
+  it('should return an article with a decreased vote', () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: -10 })
+      .expect(200)
+      .then((response) => {
+        expect(response.body.article[0].votes).toBe(90);
+        expect(response.body.article[0].article_id).toBe(1);
+        expect(typeof response.body.article[0].title).toBe("string");
+        expect(typeof response.body.article[0].topic).toBe("string");
+        expect(typeof response.body.article[0].author).toBe("string");
+        expect(typeof response.body.article[0].body).toBe("string");
+        expect(typeof response.body.article[0].created_at).toBe("string");
+        expect(typeof response.body.article[0].article_img_url).toBe("string");
+      });
+  });
+  it('should return a 400 if no inc_votes is provided', () => {
+    return request(app)
+    .patch("/api/articles/1")
+    .send({change_body: "Hello there"})
+    .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual({ err: "Missing inputs!" });
+      });
+    
+  });
+  it('should ignore any other property than inc_votes', () => {
+    return request(app)
+    .patch("/api/articles/1")
+    .send({inc_votes: 1, change_body: "Hello there"})
+    .expect(200)
+      .then((response) => {
+        expect(response.body.article[0].body).toEqual('I find this existence challenging');
+      });
+    
+  });
+  it('should return 404 if article name doesnt exist', () => {
+      return request(app)
+      .patch("/api/articles/9999")
+      .send({ inc_votes: 2 })
+      .expect(404)
+      .then((response) => {
+        expect(response.body).toEqual({ err: "No article found for article_id: 9999!" });
+      });
+  });
+  it('should return a 400 if given an invalid article_id', () => {
+    return request(app)
+      .patch("/api/articles/dogs")
+      .send({ inc_votes: 2 })
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual({ msg: "Invalid Input!" });
+      });
+    
+  });
+});

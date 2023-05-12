@@ -53,6 +53,7 @@ exports.sendComment = (articleID, commentInfo) => {
       msg: "Missing inputs!",
     });
   }
+
   const { username } = commentInfo;
   const { body } = commentInfo;
   const values = [[username, body, articleID]];
@@ -64,4 +65,29 @@ exports.sendComment = (articleID, commentInfo) => {
   return db.query(formattedInsert).then((comment) => {
     return comment.rows;
   });
+};
+
+exports.editArticle = (articleID, voteBody) => {
+  if (!voteBody.inc_votes) {
+    return Promise.reject({
+      status: 400,
+      msg: "Missing inputs!",
+    });
+  }
+  const voteAddition = voteBody.inc_votes;
+  return db
+    .query(
+      `UPDATE articles
+  SET votes = votes + $1 WHERE article_id = $2 RETURNING *`,
+      [voteAddition, articleID]
+    )
+    .then((article) => {
+      if (article.rows.length === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: `No article found for article_id: ${articleID}!`,
+        });
+      }
+      return article.rows;
+    });
 };

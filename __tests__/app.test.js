@@ -227,7 +227,7 @@ describe("POST /api/articles/:article_id/comments", () => {
       });
   });
 
-  it('should return a 400 if given an invalid article ID', () => {
+  it("should return a 400 if given an invalid article ID", () => {
     const newComment = { username: "icellusedkars", body: "Hello there" };
     return request(app)
       .post("/api/articles/dogs/comments")
@@ -237,7 +237,7 @@ describe("POST /api/articles/:article_id/comments", () => {
         expect(response.body).toEqual({ msg: "Invalid Input!" });
       });
   });
-  it('should return a 404 if given a username that doesnt exist', () => {
+  it("should return a 404 if given a username that doesnt exist", () => {
     const newComment = { username: "BillyBob", body: "cba to register" };
     return request(app)
       .post("/api/articles/1/comments")
@@ -247,18 +247,23 @@ describe("POST /api/articles/:article_id/comments", () => {
         expect(response.body).toEqual({ msg: "Input not found!" });
       });
   });
-  it('should ignore additional properties in the comment', () => {
-    const newComment = { username: "icellusedkars", body: "cba to register", votes: 1};
+  it("should ignore additional properties in the comment", () => {
+    const newComment = {
+      username: "icellusedkars",
+      body: "Hello there",
+      votes: 1,
+    };
     return request(app)
       .post("/api/articles/1/comments")
       .send(newComment)
-      .expect(400)
+      .expect(201)
       .then((response) => {
-        expect(response.body).toEqual({ err: "Invalid inputs provided!" });
+        expect(response.body.comment[0].author).toBe("icellusedkars");
+        expect(response.body.comment[0].body).toBe("Hello there");
+        expect(response.body.comment[0].votes).toBe(0);
       });
-    
   });
-  it('should return a 400 if body isnt sent', () => {
+  it("should return a 400 if body isnt sent", () => {
     const newComment = { username: "icellusedkars" };
     return request(app)
       .post("/api/articles/1/comments")

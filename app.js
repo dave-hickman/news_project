@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express()
 const {getTopics} = require('./contollers/topics_controller')
-const {getArticle, postComment, patchArticle} = require('./contollers/articles_controller')
+const {getArticle, postComment, patchArticle, deleteComment} = require('./contollers/articles_controller')
 const {getAllArticles} = require('./contollers/articles_controller')
 const {getEndpoints} = require('./contollers/endpoints_controller')
 const {getComments} = require('./contollers/articles_controller')
@@ -20,8 +20,9 @@ app.get('/api/articles/:article_id/comments', getComments)
 
 app.post('/api/articles/:article_id/comments', postComment)
 
-
 app.patch('/api/articles/:article_id', patchArticle)
+
+app.delete('/api/comments/:comment_id', deleteComment)
 
 app.use((err, req, res, next) => {
         if (err.status && err.msg){

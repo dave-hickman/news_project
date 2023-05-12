@@ -292,7 +292,7 @@ describe("8. PATCH /api/articles/:article_id", () => {
         expect(typeof response.body.article[0].article_img_url).toBe("string");
       });
   });
-  it('should return an article with a decreased vote', () => {
+  it("should return an article with a decreased vote", () => {
     return request(app)
       .patch("/api/articles/1")
       .send({ inc_votes: -10 })
@@ -308,36 +308,38 @@ describe("8. PATCH /api/articles/:article_id", () => {
         expect(typeof response.body.article[0].article_img_url).toBe("string");
       });
   });
-  it('should return a 400 if no inc_votes is provided', () => {
+  it("should return a 400 if no inc_votes is provided", () => {
     return request(app)
-    .patch("/api/articles/1")
-    .send({change_body: "Hello there"})
-    .expect(400)
+      .patch("/api/articles/1")
+      .send({ change_body: "Hello there" })
+      .expect(400)
       .then((response) => {
         expect(response.body).toEqual({ err: "Missing inputs!" });
       });
-    
   });
-  it('should ignore any other property than inc_votes', () => {
+  it("should ignore any other property than inc_votes", () => {
     return request(app)
-    .patch("/api/articles/1")
-    .send({inc_votes: 1, change_body: "Hello there"})
-    .expect(200)
+      .patch("/api/articles/1")
+      .send({ inc_votes: 1, change_body: "Hello there" })
+      .expect(200)
       .then((response) => {
-        expect(response.body.article[0].body).toEqual('I find this existence challenging');
+        expect(response.body.article[0].body).toEqual(
+          "I find this existence challenging"
+        );
       });
-    
   });
-  it('should return 404 if article name doesnt exist', () => {
-      return request(app)
+  it("should return 404 if article name doesnt exist", () => {
+    return request(app)
       .patch("/api/articles/9999")
       .send({ inc_votes: 2 })
       .expect(404)
       .then((response) => {
-        expect(response.body).toEqual({ err: "No article found for article_id: 9999!" });
+        expect(response.body).toEqual({
+          err: "No article found for article_id: 9999!",
+        });
       });
   });
-  it('should return a 400 if given an invalid article_id', () => {
+  it("should return a 400 if given an invalid article_id", () => {
     return request(app)
       .patch("/api/articles/dogs")
       .send({ inc_votes: 2 })
@@ -345,7 +347,35 @@ describe("8. PATCH /api/articles/:article_id", () => {
       .then((response) => {
         expect(response.body).toEqual({ msg: "Invalid Input!" });
       });
-    
+  });
+});
+
+describe("DELETE /api/articles/:comment_id", () => {
+  it("should remove comment and return 204 status with no content", () => {
+    return request(app)
+      .delete("/api/comments/1")
+      .expect(204)
+      .then((response) => {
+        expect(response.body).toEqual({});
+      });
+  });
+  it("should return 400 if given an invalid comment_id", () => {
+    return request(app)
+      .delete("/api/comments/dogs")
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual({ msg: "Invalid Input!" });
+      });
+  });
+  it("should return 404 if comment doesnt exist", () => {
+    return request(app)
+      .delete("/api/comments/9999")
+      .expect(404)
+      .then((response) => {
+        expect(response.body).toEqual({
+          err: "No comment found for comment_id: 9999!",
+        });
+      });
   });
 });
 

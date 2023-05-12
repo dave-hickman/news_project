@@ -46,7 +46,6 @@ exports.patchArticle = (req, res, next) => {
 }
 
 exports.deleteComment = (req, res, next) => {
-    console.log('in controller')
     const commentID = req.params.comment_id
     removeComment(commentID)
     .then(() => {

@@ -46,6 +46,15 @@ exports.selectComments = (articleID) => {
   });
 };
 
+exports.selectUsers = () => {
+  return db.query(`SELECT username, name, avatar_url FROM users`)
+  .then((users) => {
+    return users.rows
+  })
+
+}
+
+
 exports.sendComment = (articleID, commentInfo) => {
   if (!commentInfo.body || !commentInfo.username) {
     return Promise.reject({

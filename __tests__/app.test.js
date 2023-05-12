@@ -348,3 +348,21 @@ describe("8. PATCH /api/articles/:article_id", () => {
     
   });
 });
+
+describe('GET /api/users', () => {
+  it('should provide an object of all users with correct properties', () => {
+    return request(app)
+    .get('/api/users')
+    .expect(200)
+    .then((response) => {
+      expect(response.body.users.length === 4)
+      response.body.users.forEach((user) => {
+        expect(typeof user.username).toBe('string')
+        expect(typeof user.name).toBe('string')
+        expect(typeof user.avatar_url).toBe('string')
+      })
+    })
+    
+  });
+  
+});

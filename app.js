@@ -36,6 +36,9 @@ app.use((err, req, res, next) => {
         else if (err.code === '22P02'){
             res.status(400).send({msg: 'Invalid Input!'})
         }
+        else if (err.code === '42703'){
+            res.status(404).send({msg: 'Column does not exist!'})
+        }
         else{
             res.status(500).send({msg: 'Server Error'})
     }

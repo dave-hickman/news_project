@@ -20,14 +20,31 @@ exports.selectArticle = (articleID) => {
     });
 };
 
-exports.selectAllArticles = () => {
-  return db
-    .query(
-      `SELECT author, title, article_id, topic, created_at, votes, article_img_url, (SELECT COUNT(article_id) 
-  FROM comments WHERE comments.article_id = articles.article_id) AS comment_count FROM articles
-  ORDER BY created_at DESC;`
-    )
+exports.selectAllArticles = (topic = null, sortBy = "created_at", order = "desc") => {
+  let query = `SELECT author, title, article_id, topic, created_at, votes, article_img_url, 
+    (SELECT COUNT(article_id) FROM comments WHERE comments.article_id = articles.article_id) AS comment_count 
+    FROM articles`;
+
+  const params = [];
+
+  if (topic !== null) {
+    params.push(topic);
+    query += ` WHERE topic = $1`;
+  }
+  
+  if (order === 'asc' || order === 'desc'){
+  const orderByClause = ` ORDER BY ${format("%I", sortBy)} ${order.toUpperCase()}`;
+  query += orderByClause;}
+  else {query += `ORDER BY ${format("%I", sortBy)} DESC`}
+
+  return db.query(query, params)
     .then((article) => {
+      if (article.rows.length === 0) {
+        throw {
+          status: 404,
+          msg: `No articles found for topic: ${topic}!`,
+        };
+      }
       return article.rows;
     });
 };
@@ -47,13 +64,12 @@ exports.selectComments = (articleID) => {
 };
 
 exports.selectUsers = () => {
-  return db.query(`SELECT username, name, avatar_url FROM users`)
-  .then((users) => {
-    return users.rows
-  })
-
-}
-
+  return db
+    .query(`SELECT username, name, avatar_url FROM users`)
+    .then((users) => {
+      return users.rows;
+    });
+};
 
 exports.sendComment = (articleID, commentInfo) => {
   if (!commentInfo.body || !commentInfo.username) {
@@ -102,13 +118,16 @@ exports.editArticle = (articleID, voteBody) => {
 };
 
 exports.removeComment = (commentID) => {
-    return db.query(`DELETE FROM comments WHERE comment_id = $1 RETURNING *`, [commentID])
+  return db
+    .query(`DELETE FROM comments WHERE comment_id = $1 RETURNING *`, [
+      commentID,
+    ])
     .then((comment) => {
-      if (comment.rows.length === 0){
+      if (comment.rows.length === 0) {
         return Promise.reject({
           status: 404,
           msg: `No comment found for comment_id: ${commentID}!`,
         });
       }
-    })
-}
+    });
+};

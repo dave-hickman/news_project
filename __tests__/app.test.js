@@ -202,6 +202,92 @@ describe("GET /api/articles/:article_id/comments", () => {
       });
   });
 });
+
+
+describe('GET /api/articles queries', () => {
+  it('should return filtered queries for topic', () => {
+    return request(app)
+    .get("/api/articles?topic=mitch")
+    .expect(200)
+    .then((response) => {
+      expect(response.body.articles.every((article)=>{
+        return article.topic === 'mitch'
+      })).toBe(true)
+    })
+    
+  });
+
+  it('should sort the articles by column', () => {
+    return request(app)
+    .get("/api/articles?sort_by=title")
+    .expect(200)
+    .then((response) => {
+      expect(response.body.articles).toBeSortedBy('title', {descending: true})
+    })
+    
+  });
+
+  it('should sort the articles by asc/desc', () => {
+    return request(app)
+    .get("/api/articles?order=asc")
+    .expect(200)
+    .then((response) => {
+      expect(response.body.articles).toBeSortedBy('created_at')
+    })
+    
+  });
+
+  it('should work with all three', () => {
+    return request(app)
+    .get("/api/articles?topic=mitch&sort_by=title&order=asc")
+    .expect(200)
+    .then((response) => {
+      expect(response.body.articles).toBeSortedBy('title')
+      expect(response.body.articles.every((article)=>{
+        return article.topic === 'mitch'
+      })).toBe(true)
+
+    })
+  });
+  
+  it('should work with two', () => {
+    return request(app)
+    .get("/api/articles?sort_by=title&order=asc")
+    .expect(200)
+    .then((response) => {
+      expect(response.body.articles).toBeSortedBy('title')
+
+    })
+    
+  });
+
+  it('should give 404 if gven incorrect topic', () => {
+    return request(app)
+    .get("/api/articles?topic=dave&sort_by=title&order=asc")
+    .expect(404)
+    .then((response) => {
+      expect(response.body).toEqual({
+        err: "No articles found for topic: dave!"})
+  })
+})
+
+ 
+
+  it('should give 404 if gven incorrect sort_by', () => {
+    return request(app)
+    .get("/api/articles?topic=mitch&sort_by=dave&order=asc")
+    .expect(404)
+    .then((response) => {
+      expect(response.body).toEqual({
+        msg: "Column does not exist!",
+
+    })
+  });
+
+})
+})
+
+
 describe("POST /api/articles/:article_id/comments", () => {
   it("should return object with requested properties", () => {
     const newComment = { username: "icellusedkars", body: "Hello there" };

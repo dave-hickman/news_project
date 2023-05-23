@@ -10,7 +10,10 @@ exports.getArticle = (req,res,next) => {
 }
 
 exports.getAllArticles = (req, res, next) => {
-    selectAllArticles()
+    const {topic} = req.query
+    const sortBy = req.query.sort_by
+    const {order} = req.query
+    selectAllArticles(topic, sortBy, order)
     .then((articles) => {
         res.status(200).send({articles})
     })

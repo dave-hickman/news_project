@@ -271,8 +271,6 @@ describe('GET /api/articles queries', () => {
   })
 })
 
- 
-
   it('should give 404 if gven incorrect sort_by', () => {
     return request(app)
     .get("/api/articles?topic=mitch&sort_by=dave&order=asc")

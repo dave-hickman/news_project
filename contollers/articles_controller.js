@@ -19,6 +19,7 @@ exports.getAllArticles = (req, res, next) => {
     })
     .catch(next)
 }
+
 exports.getComments = (req, res, next) => {
     const articleID = req.params.article_id
     selectComments(articleID)

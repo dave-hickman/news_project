@@ -5,8 +5,9 @@ const format = require("pg-format");
 exports.selectArticle = (articleID) => {
   return db
     .query(
-      `SELECT * from articles
-    WHERE article_id = $1;`,
+      `SELECT author, body, title, article_id, topic, created_at, votes, article_img_url, 
+      (SELECT COUNT(article_id) FROM comments WHERE comments.article_id = articles.article_id) AS comment_count 
+      FROM articles WHERE article_id = $1;`,
       [articleID]
     )
     .then((article) => {

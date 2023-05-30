@@ -10,7 +10,7 @@
     }
   },
   "GET /api/articles": {
-    "description": "serves an array of all topics",
+    "description": "serves an array of all articles",
     "queries": ["author", "topic", "sort_by", "order"],
     "exampleResponse": {
       "articles": [
@@ -25,5 +25,72 @@
         }
       ]
     }
+  },
+  "GET /api/articles/:article_id": {
+    "description": "serves an object of a specific article",
+    "queries": [],
+    "exampleResponse": {
+      "article": {
+        "title": "Seafood substitutions are increasing",
+        "topic": "cooking",
+        "author": "weegembump",
+        "body": "Text from the article..",
+        "created_at": "2018-05-30T15:59:13.341Z",
+        "votes": 0,
+        "comment_count": 6,
+        "img_url:": "dummy.image_url"
+      }
+    }
+  },
+  "GET /api/articles/:article_id/comments": {
+    "description": "serves an array of comments for a specific article",
+    "queries": [],
+    "exampleResponse": {
+      "article": [
+        {
+          "author": "weegembump",
+          "body": "Text from the article..",
+          "created_at": "2018-05-30T15:59:13.341Z",
+          "votes": 0,
+          "comment_count": 6,
+          "comment_id": 1,
+          "article_id": 1
+        }
+      ]
+    }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "posts a comment for specific article and returns an object",
+    "queries": [],
+    "exampleResponse": {
+      "article": [
+        {
+          "author": "weegembump",
+          "body": "Text from the article..",
+          "article_id": 1
+        }
+      ]
+    }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "amend specific article returning object of amended article",
+    "queries": [],
+    "exampleResponse": {
+      "article": {
+        "title": "Seafood substitutions are increasing",
+        "topic": "cooking",
+        "author": "weegembump",
+        "body": "Text from the article..",
+        "created_at": "2018-05-30T15:59:13.341Z",
+        "votes": 1,
+        "comment_count": 6,
+        "img_url:": "dummy.image_url"
+      }
+    }
+  },
+  "DELETE /api/articles/:comment_id": {
+    "description": "remove comment from article",
+    "queries": [],
+    "exampleResponse": {}
   }
 }
